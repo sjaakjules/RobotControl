@@ -1,0 +1,57 @@
+The outcome of this is to act as a virtual interface when the robot is not plugged in and as the control script when it is.
+The structure is closer to c# style of organising code:
+
+	Fields (variables)
+	Constructors (how an object or copy of the class is created)
+	Properties (simple functions get or set commands of fields)
+	Methods (the functions either private or public)
+
+All fields (variables) are generally privite within a class And any methods (functions) which will not be accessed outside of 
+the class should be privite. This helps protect them from being changed accedentally and allows less lines of code to debug. 
+To get access to the private flields, properties (simple functions) are used. They are get or set functions where some fields 
+will have both and others will only have one. 
+An example why this structure is implimented is the feedback information. We never want processing to change that value, this 
+will happen in the arduino, thus only a get property is availiable and there is no way to ever modify this field. 
+
+The following is a structure layout of the tabs and classes with general intent. Each tab will have a class or two within it, 
+if that class is often being modified or debugged i have moved it to the top, above the global fields and methods,  but can be 
+anywhere in the tab. As far as i know the tab structure works like one long script but allows organisation. Any fields defined 
+outside of methods are accessible anywhere else in the code.
+
+-Kali- Main tab
+Intent
+	This is used to set the order of the different classes and as such the whole program. No methods should be defined in
+	this tab. 
+Setup()
+	This will call the contructors to setup the various classes
+Draw()	
+	This is where everything is updated. NOTE the time between frames is not stable! it will vary 58-62fps when set at 60pfs 
+	so there is a global field 'frame_time' which stores the milliseconds since last update.
+
+-GUI- 
+Intent
+	This is where everything which is drawn to screen should remain. Note the draw method in here will be called after all 	
+	the update methods of the other classes.
+
+Classes
+	GUI
+		This is the object used to control the gui where gui.draw() in Kali tab will draw content to screen.
+
+Global Fields
+	ControlP5 	cp5;
+	Textfield 	angBox1,angBox2,angBox3,angBox4,angBox5,angBox6, time;
+	Slider 		pX1, pY1, pZ1, rX1,rY1,rZ1;
+	Button 		go, home;
+
+	Note that the Textfield, Slider and Buttor Fields are objects of ControlP5 and can be called using their cp5 name which 
+	for confusion is different.
+
+Global Methods
+	void controlSetup()
+		This sets up the controlP5 objects and is called in the constructor of GUI.
+
+-Model- 
+Intent
+	This has all the information for the Virtual model, loading the obj files and applying the rotations which are updated 
+	in the Robot tab.
+
